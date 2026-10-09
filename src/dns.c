@@ -21,8 +21,7 @@ void dns_resolve_addr(const char *domain, char *addr)
         return;
     }
 
-    if (getnameinfo(results->ai_addr, results->ai_addrlen,
-                    host, sizeof(host), NULL, 0, NI_NUMERICHOST) != 0)
+    if (getnameinfo(results->ai_addr, results->ai_addrlen, host, sizeof(host), NULL, 0, NI_NUMERICHOST) != 0)
         snprintf(addr, NI_MAXHOST, "%s", domain);
     else
         snprintf(addr, NI_MAXHOST, "%s", host);
@@ -55,8 +54,7 @@ void dns_resolve_name(const char *addr, char *domain)
         }
     }
 
-    if (getnameinfo((struct sockaddr *)&ss, ss_len,
-                    host, sizeof(host), NULL, 0, NI_NAMEREQD) != 0)
+    if (getnameinfo((struct sockaddr *)&ss, ss_len, host, sizeof(host), NULL, 0, NI_NAMEREQD) != 0)
         snprintf(domain, NI_MAXHOST, "%s", addr);
     else
         snprintf(domain, NI_MAXHOST, "%s", host);
