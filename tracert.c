@@ -14,15 +14,6 @@ int main(int argc, char **argv) {
     if (status < 0)
         return 1;
 
-    printf("domain: %s\n"
-           "ttl: %d\n"
-           "max_hops: %d\n"
-           "probes: %d\n"
-           "timeout_sec: %d\n"
-           "pause_ms: %d\n",
-           domain, options.ttl, options.max_hops, options.probes,
-           options.timeout_sec, options.pause_ms);
-
     start_tracing(domain, &options);
 
     return 0;
