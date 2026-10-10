@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>  
 
 int create_raw_socket(void);
 int set_ttl(int sockfd, uint32_t ttl);

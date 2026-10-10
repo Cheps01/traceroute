@@ -11,11 +11,14 @@
 int create_raw_socket(void)
 {
     int sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
-    if (sockfd < 0)
+    if (sockfd < 0) {
+        perror("[raw_socket] Failed to create socket.\n");
         return -1;
+    }
 
     int one = 1;
     if (setsockopt(sockfd, IPPROTO_IP, IP_RECVTTL, &one, sizeof(one)) < 0) {
+        perror("[raw_socket] Failed to set socket options.\n");
         close(sockfd);
         return -1;
     }
