@@ -14,7 +14,7 @@ void dns_resolve_addr(const char *domain, char *addr)
     char host[NI_MAXHOST];
 
     memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_UNSPEC;
+    hints.ai_family = AF_INET;
 
     if (getaddrinfo(domain, NULL, &hints, &results) != 0) {
         snprintf(addr, NI_MAXHOST, "%s", domain);
@@ -28,33 +28,21 @@ void dns_resolve_addr(const char *domain, char *addr)
 
     freeaddrinfo(results);
 }
-
 void dns_resolve_name(const char *addr, char *domain)
 {
-    struct sockaddr_storage ss;
-    struct sockaddr_in *sin4;
-    struct sockaddr_in6 *sin6;
-    socklen_t ss_len;
+    struct sockaddr_in sin;
     char host[NI_MAXHOST];
 
-    memset(&ss, 0, sizeof(ss));
+    memset(&sin, 0, sizeof(sin));
 
-    sin4 = (struct sockaddr_in *)&ss;
-    if (inet_pton(AF_INET, addr, &sin4->sin_addr) == 1) {
-        sin4->sin_family = AF_INET;
-        ss_len = sizeof(*sin4);
-    } else {
-        sin6 = (struct sockaddr_in6 *)&ss;
-        if (inet_pton(AF_INET6, addr, &sin6->sin6_addr) == 1) {
-            sin6->sin6_family = AF_INET6;
-            ss_len = sizeof(*sin6);
-        } else {
-            snprintf(domain, NI_MAXHOST, "%s", addr);
-            return;
-        }
+    if (inet_pton(AF_INET, addr, &sin.sin_addr) != 1) {
+        snprintf(domain, NI_MAXHOST, "%s", addr);
+        return;
     }
+    sin.sin_family = AF_INET;
 
-    if (getnameinfo((struct sockaddr *)&ss, ss_len, host, sizeof(host), NULL, 0, NI_NAMEREQD) != 0)
+    if (getnameinfo((struct sockaddr *)&sin, sizeof(sin),
+                    host, sizeof(host), NULL, 0, NI_NAMEREQD) != 0)
         snprintf(domain, NI_MAXHOST, "%s", addr);
     else
         snprintf(domain, NI_MAXHOST, "%s", host);
